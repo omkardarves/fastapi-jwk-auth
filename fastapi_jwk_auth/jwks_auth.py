@@ -3,7 +3,6 @@ from typing import Any, Callable, Dict
 import jwt
 import requests
 from fastapi import Depends, HTTPException, Request
-from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from starlette.middleware.base import BaseHTTPMiddleware
 
@@ -58,15 +57,12 @@ def jwk_validator(
 # JWT Token Validation Middleware
 class JWKMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable):
-        try:
-            bearer_token = request.headers.get("authorization") or request.headers.get(
-                "Authorization"
-            )
-            if not bearer_token or not bearer_token.startswith("Bearer "):
-                raise HTTPException(status_code=401, detail="Invalid token")
-            token = bearer_token[7:]
-            request.state.payload = get_verified_payload(token)
-            response = await call_next(request)
-            return response
-        except HTTPException as e:
-            return JSONResponse(content={"detail": e.detail}, status_code=e.status_code)
+        bearer_token = request.headers.get("authorization") or request.headers.get(
+            "Authorization"
+        )
+        if not bearer_token or not bearer_token.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid token")
+        token = bearer_token[7:]
+        request.state.payload = get_verified_payload(token)
+        response = await call_next(request)
+        return response
