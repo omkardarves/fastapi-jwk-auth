@@ -8,3 +8,7 @@ dist/
 build/
 *.egg-info/
 .better-commits.json
+
+# Environment
+.env
+.venv
