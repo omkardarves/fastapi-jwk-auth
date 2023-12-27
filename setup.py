@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="fastapi-jwk-auth",
-    version="0.0.2beta",
+    version="0.0.3",
     packages=find_packages(),
     install_requires=["fastapi", "PyJWT", "cryptography"],
     long_description=open("README.md").read(),

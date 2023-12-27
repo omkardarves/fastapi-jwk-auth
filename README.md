@@ -20,12 +20,12 @@ Install the package using pip:
 ```bash
 pip install fastapi-jwk-auth
 ```
-## Usage
+# Usage
 ## FastAPI Middleware Integration
 
 ```python
 from fastapi import FastAPI, Depends
-from fastapi_jwk_auth import JWTMiddleware
+from fastapi_jwk_auth.jwks_auth import jwk_validator, JWKMiddleware
 
 app = FastAPI()
 
@@ -37,6 +37,7 @@ app.add_middleware(JWTMiddleware)
 
 ```python
 from fastapi import FastAPI, Depends
+from fastapi_jwk_auth.jwks_auth import jwk_validator, JWKMiddleware
 
 app=FastAPI()
 
