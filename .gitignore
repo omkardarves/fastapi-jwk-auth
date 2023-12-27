@@ -12,3 +12,6 @@ build/
 # Environment
 .env
 .venv
+
+# mypy
+.mypy_cache
