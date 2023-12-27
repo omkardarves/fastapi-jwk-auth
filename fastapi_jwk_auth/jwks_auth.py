@@ -4,7 +4,8 @@ import jwt
 import requests
 from fastapi import Depends, HTTPException, Request, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.middleware.base import (BaseHTTPMiddleware,
+                                       RequestResponseEndpoint)
 
 __all__ = ["jwk_validator", "JWKMiddleware"]
 
@@ -20,7 +21,23 @@ def fetch_jwks(jwks_uri: str) -> Dict[str, Any]:
     return jwks
 
 
-def get_verified_payload(token: str) -> Any:
+def get_validated_payload(token: str) -> Any:
+    """
+    This function validates the jwt token and extracts
+    the payload from it.
+
+    Args:
+        token (str): A valid JWT token
+
+    Raises:
+        HTTPException: The token uses an unknown algorithm.
+        HTTPException: The token uses an unknown key.
+        HTTPException: The token has expired.
+        HTTPException: The token is invalid.
+
+    Returns:
+        Any: The payload of the validated JWT token.
+    """
     jwks = fetch_jwks(JWKS_URI)
     public_key = None
     try:
@@ -50,19 +67,21 @@ def jwk_validator(
     token = credentials.credentials
     if credentials.scheme != "Bearer" or not token:
         raise HTTPException(status_code=401, detail="Invalid token")
-    request.state.payload = get_verified_payload(token)
+    request.state.payload = get_validated_payload(token)
     return request
 
 
 # JWT Token Validation Middleware
 class JWKMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         bearer_token = request.headers.get("authorization") or request.headers.get(
             "Authorization"
         )
         if not bearer_token or not bearer_token.startswith("Bearer "):
             raise HTTPException(status_code=401, detail="Invalid token")
         token = bearer_token[7:]
-        request.state.payload = get_verified_payload(token)
+        request.state.payload = get_validated_payload(token)
         response = await call_next(request)
         return response
