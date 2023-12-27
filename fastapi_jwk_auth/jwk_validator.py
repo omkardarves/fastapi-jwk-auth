@@ -21,7 +21,7 @@ def fetch_jwks(jwks_uri):
 
 
 # JWT Token Validation Middleware
-async def jwtmiddleware(
+def jwk_validator(
     request: Request, credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
     try:
@@ -60,7 +60,7 @@ async def jwtmiddleware(
 
 
 # JWT Token Validation Middleware
-class JWTMiddleware(BaseHTTPMiddleware):
+class JWKMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable):
         try:
             bearer_token = request.headers.get("authorization") or request.headers.get(

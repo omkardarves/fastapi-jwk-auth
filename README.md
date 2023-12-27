@@ -1,38 +1,46 @@
-# My JWT Validator
-
-![Project Logo or Banner - Optional]
+# Fastapi JWKS Auth(Validator)
 
 ## Overview
 
-My JWT Validator is a Python package that provides middleware for validating JSON Web Tokens (JWT) in FastAPI applications. It includes a JWT Token Validation Middleware that can be easily integrated into your FastAPI project to secure your API endpoints.
+FastAPI JWK Auth is a Python package designed to enhance [FastAPI](https://fastapi.tiangolo.com/) applications with easy and secure JSON Web Token (JWT) validation using JSON Web Key Sets (JWKS). It simplifies the integration of JWT-based authentication in your FastAPI project when JWKS URLs are employed for key retrieval.
+
 
 ## Features
 
-- JWT token validation using JSON Web Key Set (JWKS)
-- Middleware for FastAPI applications
-- Easy integration into existing FastAPI projects
+- **JWKS-Based JWT Validation:** Seamlessly validate JWTs using JWKS obtained from configured URLs.
+- **FastAPI Middleware Integration:** Integrate the provided `JWTMiddleware` class into your FastAPI application middleware like `app.add_middleware(JWTMiddleware)` to secure your routes with JWT validation.
+- **Fastapi Router dependency:** Integrate the provided `jwk_validator` function into your FastAPI router like `app.include_router(auth_app.router, dependencies=[Depends(jwk_validator)])` to secure your product with JWT validation
+- **Efficient JWK Handling:** Retrieve and utilize JSON Web Key Sets efficiently in your FastAPI routes with the `fetch_jwks` function.
+- **Exception Handling:** Easily manage JWT validation exceptions using FastAPI's HTTPException.
 
 ## Installation
 
 Install the package using pip:
 
 ```bash
-pip install my-jwt-validator
+pip install fastapi-jwk-auth
 ```
 ## Usage
-## Example FastAPI Application
+## FastAPI Middleware Integration
+
 ```python
-from fastapi import FastAPI, Depends, HTTPException
-from my_jwt_validator import JWTMiddleware
+from fastapi import FastAPI, Depends
+from fastapi_jwk_auth import JWTMiddleware
 
 app = FastAPI()
 
 # Include the JWT Middleware
 app.add_middleware(JWTMiddleware)
+```
 
-@app.get("/secure-endpoint")
-async def secure_endpoint(current_user: str = Depends(get_current_user)):
-    return {"message": "This is a secure endpoint", "user": current_user}
+## FastAPI Route JWT Validation
+
+```python
+from fastapi import FastAPI, Depends
+
+app=FastAPI()
+
+app.include_router(auth_app.router, dependencies=[Depends(jwk_validator)])
 ```
 
 ## Configuration
