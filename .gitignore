@@ -8,3 +8,10 @@ dist/
 build/
 *.egg-info/
 .better-commits.json
+
+# Environment
+.env
+.venv
+
+# mypy
+.mypy_cache
