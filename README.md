@@ -48,7 +48,7 @@ app.include_router(auth_app.router, dependencies=[Depends(jwk_validator)])
 Set the following environment variable to the JSON Web Key Set (JWKS) URI:
 
 ```bash
-JWK_HOST="https://your-identity-server"
+export JWK_HOST="https://your-identity-server"
 ```
 
 ## Contributing
